@@ -141,7 +141,7 @@ void HackGame() {
 		localTeam = mem.Read<int>(localPawn + OffTeamNum());
 	}
 
-	float fovRadius = kAimFovPx;
+	float fovRadius = g_AimFovPx;
 	float centerX = screenW / 2.0f;
 	float centerY = screenH / 2.0f;
 
@@ -149,7 +149,13 @@ void HackGame() {
 	float closestDistance = fovRadius; // anything farther than the FOV radius is ignored
 	Vector2 bestTargetScreenPos = { 0.0f, 0.0f };
 
-	const int targetBoneId = HEAD;
+	int targetBoneId;
+	switch (g_AimBone) {
+		case 1: targetBoneId = NECK; break;
+		case 2: targetBoneId = CHEST; break;
+		case 3: targetBoneId = PELVIS; break;
+		default: targetBoneId = HEAD; break;
+	}
 
 	if (g_ESPFovCircle) {
 		Overlay::Circle(centerX, centerY, fovRadius, IM_COL32(0, 255, 255, 150), 32, 1.0f);

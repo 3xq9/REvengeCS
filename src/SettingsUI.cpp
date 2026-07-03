@@ -87,6 +87,15 @@ static void BuildAimbotPage() {
 	ImGui::Text("Enabled");
 	ImGui::SameLine(ImGui::GetWindowWidth() - 60);
 	ToggleSwitch("##aim_on", &g_AimEnabled);
+
+	ImGui::Dummy(ImVec2(0, 6));
+
+	static const char* kBones[] = { "Head", "Neck", "Chest", "Pelvis" };
+	ImGui::SetNextItemWidth(160);
+	ImGui::Combo("Target", &g_AimBone, kBones, IM_ARRAYSIZE(kBones));
+
+	ImGui::SetNextItemWidth(160);
+	ImGui::SliderFloat("FOV", &g_AimFovPx, 20.0f, 600.0f, "%.0f px");
 }
 
 static void BuildEspPage() {

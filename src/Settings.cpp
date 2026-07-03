@@ -5,6 +5,8 @@
 #include <string>
 
 bool g_AimEnabled = false;
+int g_AimBone = 0;
+float g_AimFovPx = 200.0f;
 
 bool g_ESPBox = true;
 bool g_ESPSkeleton = true;
@@ -21,6 +23,8 @@ void SaveSettings() {
 	std::ofstream f(kSettingsFile);
 	if (!f) return;
 	f << "aim_enabled " << g_AimEnabled << "\n";
+	f << "aim_bone " << g_AimBone << "\n";
+	f << "aim_fov_px " << g_AimFovPx << "\n";
 	f << "esp_box " << g_ESPBox << "\n";
 	f << "esp_skel " << g_ESPSkeleton << "\n";
 	f << "esp_hp " << g_ESPHealth << "\n";
@@ -36,6 +40,8 @@ void LoadSettings() {
 	std::string key;
 	while (f >> key) {
 		if      (key == "aim_enabled")  f >> g_AimEnabled;
+		else if (key == "aim_bone")     f >> g_AimBone;
+		else if (key == "aim_fov_px")   f >> g_AimFovPx;
 		else if (key == "esp_box")      f >> g_ESPBox;
 		else if (key == "esp_skel")     f >> g_ESPSkeleton;
 		else if (key == "esp_hp")       f >> g_ESPHealth;

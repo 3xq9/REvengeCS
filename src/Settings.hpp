@@ -2,7 +2,8 @@
 
 // Aimbot
 extern bool g_AimEnabled;
-inline constexpr float kAimFovPx = 200.0f;
+extern int g_AimBone;       // 0 Head, 1 Neck, 2 Chest, 3 Pelvis
+extern float g_AimFovPx;    // radius (in pixels) of the FOV cone the aimbot tracks inside
 inline constexpr float kAimSmoothness = 5.0f;
 
 // Visuals / ESP
