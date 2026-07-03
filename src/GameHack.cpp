@@ -157,7 +157,7 @@ void HackGame() {
 		default: targetBoneId = HEAD; break;
 	}
 
-	if (g_ESPFovCircle) {
+	if (g_VisualsEnabled && g_ESPFovCircle) {
 		Overlay::Circle(centerX, centerY, fovRadius, IM_COL32(0, 255, 255, 150), 32, 1.0f);
 	}
 
@@ -234,7 +234,7 @@ void HackGame() {
 						}
 					}
 
-					if (g_ESPSkeleton) {
+					if (g_VisualsEnabled && g_ESPSkeleton) {
 						ImU32 boneColor = IM_COL32(255, 255, 255, 220);
 						size_t linkCount = sizeof(local_skeleton_links) / sizeof(local_skeleton_links[0]);
 
@@ -263,7 +263,7 @@ void HackGame() {
 						continue;
 					}
 
-					if (g_ESPHeadCircle && headPos.x != 0 && headPos.y != 0)
+					if (g_VisualsEnabled && g_ESPHeadCircle && headPos.x != 0 && headPos.y != 0)
 					{
 						float headRadius = abs(headPos.y - neckPos.y);
 						Overlay::Circle(headPos.x, headPos.y, headRadius, IM_COL32(230, 50, 50, 255), 16, 1.0f);
@@ -294,11 +294,11 @@ void HackGame() {
 					float x = headPos.x - width / 2.0f;
 					float y = headPos.y;
 
-					if (g_ESPBox) {
+					if (g_VisualsEnabled && g_ESPBox) {
 						Overlay::Box(x, y, width, height, IM_COL32(255, 255, 255, 255), 2.0f);
 					}
 
-					if (g_ESPHealth) {
+					if (g_VisualsEnabled && g_ESPHealth) {
 						float healthHeight = (height * health) / 100.0f;
 						ImU32 healthColor = IM_COL32(
 							(int)(255 - (health * 2.55f)),
@@ -309,7 +309,7 @@ void HackGame() {
 						Overlay::Line(x - 5, rootPose.y, x - 5, rootPose.y - healthHeight, healthColor, 2.0f);
 					}
 
-					if (g_ESPSnap) {
+					if (g_VisualsEnabled && g_ESPSnap) {
 						Overlay::Line(screenW / 2.0f, screenH, rootPose.x, rootPose.y, IM_COL32(255, 255, 255, 100), 1.0f);
 					}
 
@@ -320,7 +320,9 @@ void HackGame() {
 
 		if (bestTargetPawn != 0)
 		{
-			Overlay::Line(centerX, centerY, bestTargetScreenPos.x, bestTargetScreenPos.y, IM_COL32(255, 0, 0, 255), 1.0f);
+			if (g_VisualsEnabled) {
+				Overlay::Line(centerX, centerY, bestTargetScreenPos.x, bestTargetScreenPos.y, IM_COL32(255, 0, 0, 255), 1.0f);
+			}
 
 			if (g_AimEnabled && localPawn)
 			{

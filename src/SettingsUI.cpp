@@ -99,6 +99,13 @@ static void BuildAimbotPage() {
 }
 
 static void BuildEspPage() {
+	ImGui::Text("Enabled");
+	ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+	ToggleSwitch("##esp_on", &g_VisualsEnabled);
+
+	ImGui::Dummy(ImVec2(0, 6));
+
+	ImGui::BeginDisabled(!g_VisualsEnabled);
 	ImGui::Checkbox("Bounding box", &g_ESPBox);
 	ImGui::Checkbox("Skeleton", &g_ESPSkeleton);
 	ImGui::Checkbox("Health bar", &g_ESPHealth);
@@ -106,6 +113,58 @@ static void BuildEspPage() {
 	ImGui::Checkbox("Snap lines", &g_ESPSnap);
 	ImGui::Checkbox("FOV circle", &g_ESPFovCircle);
 	ImGui::Checkbox("Skip teammates", &g_ESPTeamCheck);
+	ImGui::EndDisabled();
+}
+
+static void KeyBindButton(const char* label, int& keyVar) {
+	static int activeId = 0;
+	int id = ImGui::GetID(label);
+
+	char buf[64];
+	if (activeId == id) {
+		strcpy_s(buf, "Press key...");
+
+		// Capture any keyboard key that is down (avoid mouse clicks)
+		for (int i = 8; i < 256; i++) {
+			if (i == VK_LBUTTON || i == VK_RBUTTON || i == VK_MBUTTON) continue;
+			if (GetAsyncKeyState(i) & 0x8000) {
+				if (i == VK_ESCAPE) {
+					keyVar = 0;
+				} else {
+					keyVar = i;
+				}
+				activeId = 0;
+				SaveSettings();
+				break;
+			}
+		}
+	} else {
+		if (keyVar == 0) {
+			strcpy_s(buf, "NONE");
+		} else {
+			unsigned int scanCode = MapVirtualKeyA(keyVar, MAPVK_VK_TO_VSC);
+			char name[64] = { 0 };
+			if (GetKeyNameTextA(scanCode << 16, name, sizeof(name))) {
+				strcpy_s(buf, name);
+			} else {
+				sprintf_s(buf, "Key %d", keyVar);
+			}
+		}
+	}
+
+	ImGui::Text(label);
+	ImGui::SameLine(120);
+	char btnId[128];
+	sprintf_s(btnId, "%s##%s", buf, label);
+	if (ImGui::Button(btnId, ImVec2(140, 22))) {
+		activeId = id;
+	}
+}
+
+static void BuildKeybindsPage() {
+	KeyBindButton("Aimbot Toggle", g_AimbotHotkey);
+	ImGui::Dummy(ImVec2(0, 4));
+	KeyBindButton("Visuals Toggle", g_VisualsHotkey);
 }
 
 static void BuildDumperPage() {
@@ -154,7 +213,7 @@ void BuildSettingsUI(int& activeTab) {
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoBringToFrontOnFocus);
 
-	static const char* kTabLabels[] = { "Aimbot", "Visuals", "Dumper" };
+	static const char* kTabLabels[] = { "Aimbot", "Visuals", "Keybinds", "Dumper" };
 	for (int i = 0; i < IM_ARRAYSIZE(kTabLabels); i++) {
 		bool sel = (activeTab == i);
 		ImGui::PushStyleColor(ImGuiCol_Text, sel ? style.Colors[ImGuiCol_Text] : kMuted);
@@ -179,7 +238,8 @@ void BuildSettingsUI(int& activeTab) {
 	switch (activeTab) {
 		case 0: BuildAimbotPage(); break;
 		case 1: BuildEspPage(); break;
-		case 2: BuildDumperPage(); break;
+		case 2: BuildKeybindsPage(); break;
+		case 3: BuildDumperPage(); break;
 	}
 
 	ImGui::End();

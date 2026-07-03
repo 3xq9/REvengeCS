@@ -20,6 +20,12 @@ static void KeyHandler() {
 		if (GetAsyncKeyState(VK_END) & 1) {
 			g_Running = false;
 		}
+		if (g_AimbotHotkey != 0 && (GetAsyncKeyState(g_AimbotHotkey) & 1)) {
+			g_AimEnabled = !g_AimEnabled;
+		}
+		if (g_VisualsHotkey != 0 && (GetAsyncKeyState(g_VisualsHotkey) & 1)) {
+			g_VisualsEnabled = !g_VisualsEnabled;
+		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 }
