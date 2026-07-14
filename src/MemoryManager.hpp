@@ -89,12 +89,6 @@ public:
         return ReadProcessMemory(hProcess, reinterpret_cast<LPCVOID>(address), buffer, size, &got) && got == size;
     }
 
-    bool WriteBytes(uintptr_t address, const void* buffer, size_t size) {
-        if (hProcess == nullptr || address == 0) return false;
-        SIZE_T written = 0;
-        return WriteProcessMemory(hProcess, reinterpret_cast<LPVOID>(address), buffer, size, &written) && written == size;
-    }
-
     template <typename T>
     T Read(uintptr_t address) {
         T buffer{};
@@ -102,13 +96,6 @@ public:
 
         ReadProcessMemory(hProcess, reinterpret_cast<LPCVOID>(address), &buffer, sizeof(T), nullptr);
         return buffer;
-    }
-
-    template <typename T>
-    bool Write(uintptr_t address, const T& value) {
-        if (hProcess == nullptr || address == 0) return false;
-        SIZE_T written = 0;
-        return WriteProcessMemory(hProcess, reinterpret_cast<LPVOID>(address), &value, sizeof(T), &written) && written == sizeof(T);
     }
 
     uintptr_t FindPattern(uintptr_t start, uintptr_t end, const std::vector<int>& pattern) {
@@ -148,10 +135,7 @@ public:
         return 0;
     }
 
-	    HANDLE GetProcessHandle() const { return hProcess; }
-	    DWORD GetProcessId() const { return processId; }
-
-	    void CleanUp() {
+    void CleanUp() {
         if (hProcess) {
             CloseHandle(hProcess);
             hProcess = nullptr;
